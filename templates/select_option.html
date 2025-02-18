@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Option</title>
+</head>
+<body>
+    <h1>You've selected {{ university_name }} and {{ major_name }}!</h1>
+    <p>What would you like to explore?</p>
+    
+    <ul>
+        <li><a href="{{ url_for('main.overview', university_name=university_name, major_name=major_name) }}">Overview</a></li>
+        <li><a href="{{ url_for('main.prerequisites', university_name=university_name, major_name=major_name) }}">Prerequisites</a></li>
+        <li><a href="{{ url_for('main.deadlines', university_name=university_name, major_name=major_name) }}">Deadlines</a></li>
+    </ul>
+</body>
+</html>
+

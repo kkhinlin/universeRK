@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, render_template, request, redirect, url_for
 from app.gemini_integration import generate_content
 
 # Create a Blueprint for routes
@@ -11,7 +11,7 @@ universities = [
 ]
 
 # Route: Home - Display the main page (index.html)
-@main.route("/", methods=["GET"])
+@main.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
         university_name = request.form.get("university_name")
@@ -20,72 +20,64 @@ def home():
         if not university_name or not major_name:
             return render_template("index.html", error="Please provide both university and major.")
 
-        # Generate AI responses based on the inputs
-        university_prompt = f"Which university would you like to explore? {university_name}"
-        major_prompt = f"Which program would you like to explore? {major_name}"
-
-        university_response = generate_content(university_prompt)
-        major_response = generate_content(major_prompt)
-
-        return render_template("index.html", university_response=university_response, major_response=major_response)
+        # Redirect to the next page to select between overview, prerequisites, and deadlines
+        return redirect(url_for("main.select_option", university_name=university_name, major_name=major_name))
 
     # If GET request, just display the home page with the prompt
     prompt = "Which university would you like to explore?"
     major_prompt = "What major would you like to pursue?"
     return render_template("index.html", prompt=prompt, major_prompt=major_prompt)
 
-# Route: Select a university and program, then provide details
-@main.route("/explore", methods=["POST"])
-def explore_university():
-    data = request.json
-    university_name = data.get("university_name")
+# Route: Select option between overview, prerequisites, and deadlines
+@main.route("/select-option", methods=["GET"])
+def select_option():
+    university_name = request.args.get("university_name")
+    major_name = request.args.get("major_name")
+
+    if not university_name or not major_name:
+        return redirect(url_for("main.home"))
+
+    return render_template("select_option.html", university_name=university_name, major_name=major_name)
+
+# Route: Overview - Display the university and major overview
+@main.route("/overview", methods=["GET"])
+def overview():
+    university_name = request.args.get("university_name")
+    major_name = request.args.get("major_name")
+
+    if not university_name or not major_name:
+        return redirect(url_for("main.home"))
+
+    # Example response using the generate_content function (customize this)
+    ai_overview = generate_content(f"Tell me about the {major_name} program at {university_name}.")
     
-    if not university_name:
-        return jsonify({"error": "University name is required"}), 400
+    return render_template("overview.html", university_name=university_name, major_name=major_name, ai_overview=ai_overview)
 
-    # Find the university by name
-    university = next((u for u in universities if u["name"].lower() == university_name.lower()), None)
-    if not university:
-        return jsonify({"error": f"University '{university_name}' not found."}), 404
+# Route: Prerequisites - Display the prerequisites for the program
+@main.route("/prerequisites", methods=["GET"])
+def prerequisites():
+    university_name = request.args.get("university_name")
+    major_name = request.args.get("major_name")
 
-    # Ask for program selection after selecting university
-    prompt = f"Which program would you like to explore at {university_name}?"
-    ai_response = generate_content(prompt)
+    if not university_name or not major_name:
+        return redirect(url_for("main.home"))
 
-    return jsonify({
-        "university": university_name,
-        "programs": university["programs"],
-        "ai_prompt": ai_response
-    })
-
-# Route: Provide full university details after selecting program
-@main.route("/university-details", methods=["POST"])
-def university_details():
-    data = request.json
-    university_name = data.get("university_name")
-    program_name = data.get("program_name")
+    # Example response using the generate_content function (customize this)
+    ai_prerequisites = generate_content(f"What are the prerequisites for the {major_name} program at {university_name}?")
     
-    if not university_name or not program_name:
-        return jsonify({"error": "Both university name and program name are required"}), 400
+    return render_template("prerequisites.html", university_name=university_name, major_name=major_name, ai_prerequisites=ai_prerequisites)
 
-    # Find the university by name
-    university = next((u for u in universities if u["name"].lower() == university_name.lower()), None)
-    if not university:
-        return jsonify({"error": f"University '{university_name}' not found."}), 404
+# Route: Deadlines - Display the deadlines for the program
+@main.route("/deadlines", methods=["GET"])
+def deadlines():
+    university_name = request.args.get("university_name")
+    major_name = request.args.get("major_name")
 
-    # Check if the program is offered at the university
-    if program_name not in university["programs"]:
-        return jsonify({"error": f"Program '{program_name}' is not offered at {university_name}."}), 404
+    if not university_name or not major_name:
+        return redirect(url_for("main.home"))
 
-    # Generate the overview of the university, deadlines, reviews, experiences, and career paths
-    overview = f"Here's what you need to know about the {program_name} program at {university_name}."
-    ai_response = generate_content(overview)
+    # Example response using the generate_content function (customize this)
+    ai_deadlines = generate_content(f"What are the deadlines for the {major_name} program at {university_name}?")
+    
+    return render_template("deadlines.html", university_name=university_name, major_name=major_name, ai_deadlines=ai_deadlines)
 
-    return jsonify({
-        "university_name": university_name,
-        "program_name": program_name,
-        "deadline": university["deadline"],
-        "reviews": university["reviews"],
-        "career_paths": university["career_paths"],
-        "ai_overview": ai_response
-    })

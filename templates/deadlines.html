@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadlines</title>
+</head>
+<body>
+    <h1>Deadlines for the {{ major_name }} program at {{ university_name }}</h1>
+    <p>{{ ai_deadlines }}</p>
+    <a href="{{ url_for('main.select_option', university_name=university_name, major_name=major_name) }}">Go back</a>
+</body>
+</html>
+

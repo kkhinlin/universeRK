@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniVerse</title>
+</head>
+<body>
+    <h1>Welcome to UniVerse</h1>
+    
+    <form action="/" method="POST">
+        <label for="university_name">Which university would you like to explore?</label>
+        <input type="text" id="university_name" name="university_name" required>
+        
+        <br><br>
+        
+        <label for="major_name">What major would you like to pursue?</label>
+        <input type="text" id="major_name" name="major_name" required>
+        
+        <br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+    
+    {% if university_response %}
+        <h3>University Response:</h3>
+        <p>{{ university_response }}</p>
+    {% endif %}
+
+    {% if major_response %}
+        <h3>Major Response:</h3>
+        <p>{{ major_response }}</p>
+    {% endif %}
+    
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>

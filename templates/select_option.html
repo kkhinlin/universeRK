@@ -1,19 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Option</title>
-</head>
-<body>
-    <h1>You've selected {{ university_name }} and {{ major_name }}!</h1>
-    <p>What would you like to explore?</p>
-    
-    <ul>
-        <li><a href="{{ url_for('main.overview', university_name=university_name, major_name=major_name) }}">Overview</a></li>
-        <li><a href="{{ url_for('main.prerequisites', university_name=university_name, major_name=major_name) }}">Prerequisites</a></li>
-        <li><a href="{{ url_for('main.deadlines', university_name=university_name, major_name=major_name) }}">Deadlines</a></li>
-    </ul>
-</body>
-</html>
+<h1>Welcome to UniVerse</h1>
 
+<p>You are looking to explore the following:</p>
+<p><strong>University:</strong> {{ university_name }}</p>
+<p><strong>Major:</strong> {{ major_name }}</p>
+<p><strong>Applicant Type:</strong> {{ applicant_type }}</p>
+
+<p>Please choose the information you'd like to explore:</p>
+
+<!-- Change POST to GET -->
+<form method="GET" action="{{ url_for('main.overview') }}">
+    <input type="hidden" name="university_name" value="{{ university_name }}">
+    <input type="hidden" name="major_name" value="{{ major_name }}">
+    <input type="hidden" name="applicant_type" value="{{ applicant_type }}">
+    <button type="submit">Overview</button>
+</form>
+
+<form method="GET" action="{{ url_for('main.deadlines') }}">
+    <input type="hidden" name="university_name" value="{{ university_name }}">
+    <input type="hidden" name="major_name" value="{{ major_name }}">
+    <input type="hidden" name="applicant_type" value="{{ applicant_type }}">
+    <button type="submit">Deadlines</button>
+</form>
+
+<form method="GET" action="{{ url_for('main.prerequisites') }}">
+    <input type="hidden" name="university_name" value="{{ university_name }}">
+    <input type="hidden" name="major_name" value="{{ major_name }}">
+    <input type="hidden" name="applicant_type" value="{{ applicant_type }}">
+    <button type="submit">Prerequisites</button>
+</form>

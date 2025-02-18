@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deadlines</title>
 </head>
 <body>
-    <h1>Deadlines for the {{ major_name }} program at {{ university_name }}</h1>
-    <p>{{ ai_deadlines }}</p>
-    <a href="{{ url_for('main.select_option', university_name=university_name, major_name=major_name) }}">Go back</a>
+    <h1>Application Deadlines</h1>
+    <p>University: {{ university_name }}</p>
+    <p>Major: {{ major_name }}</p>
+    <p>Applicant Type: {{ applicant_type }}</p>
+    
+    <!-- If ai_deadlines is available, display it -->
+    {% if ai_deadlines %}
+        <p>Deadlines: {{ ai_deadlines }}</p>
+    {% else %}
+        <p>No deadlines found for this program.</p>
+    {% endif %}
 </body>
 </html>
-
